@@ -98,7 +98,7 @@ public:
 
     void write_to_file(path file_path) {
         ofstream output_file(file_path, ios_base::binary);
-        if (!output_file.good()) // Обрабатываем случай, когда файл не удалось создать или открыть
+        if (!output_file.good()) // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј СЃР»СѓС‡Р°Р№, РєРѕРіРґР° С„Р°Р№Р» РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РёР»Рё РѕС‚РєСЂС‹С‚СЊ
             throw runtime_error("File creating error");
 
         output_file.write(reinterpret_cast<const char*>(&data_array[0]), sizeof(T) * size);
@@ -107,42 +107,42 @@ public:
 
     void read_from_file(path file_path) {
         ifstream input_file(file_path, ios_base::binary);
-        if (!input_file.good()) // Обрабатываем случай, когда файл не удалось открыть
+        if (!input_file.good()) // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј СЃР»СѓС‡Р°Р№, РєРѕРіРґР° С„Р°Р№Р» РЅРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ
             throw runtime_error("File open error");
 
-        // Определяем количество элементов в считываемом массиве
+        // РћРїСЂРµРґРµР»СЏРµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ СЃС‡РёС‚С‹РІР°РµРјРѕРј РјР°СЃСЃРёРІРµ
         input_file.seekg(0, ios_base::end);
         int file_size = input_file.tellg();
         int elems_num = file_size / sizeof(T);
         input_file.seekg(0, ios_base::beg);
 
-        // Итоговый массив, в который будут считываться данные
+        // РС‚РѕРіРѕРІС‹Р№ РјР°СЃСЃРёРІ, РІ РєРѕС‚РѕСЂС‹Р№ Р±СѓРґСѓС‚ СЃС‡РёС‚С‹РІР°С‚СЊСЃСЏ РґР°РЅРЅС‹Рµ
         size = elems_num;
         delete[] data_array;
         data_array = new T[size];
 
-        // Считывание
+        // РЎС‡РёС‚С‹РІР°РЅРёРµ
         input_file.read(reinterpret_cast<char*>(data_array), file_size);
         input_file.close();
     }
 
     void parallel_read_from_file(path file_path) {
         ifstream input_file(file_path, ios_base::binary);
-        if (!input_file.good()) // Обрабатываем случай, когда файл не удалось открыть
+        if (!input_file.good()) // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј СЃР»СѓС‡Р°Р№, РєРѕРіРґР° С„Р°Р№Р» РЅРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ
             throw runtime_error("File open error");
 
-        // Определяем количество элементов в считываемом массиве
+        // РћРїСЂРµРґРµР»СЏРµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ СЃС‡РёС‚С‹РІР°РµРјРѕРј РјР°СЃСЃРёРІРµ
         input_file.seekg(0, ios_base::end);
         int file_size = input_file.tellg();
         int elems_num = file_size / sizeof(T);
         input_file.seekg(0, ios_base::beg);
 
-        // Итоговый массив, в который будут считываться данные
+        // РС‚РѕРіРѕРІС‹Р№ РјР°СЃСЃРёРІ, РІ РєРѕС‚РѕСЂС‹Р№ Р±СѓРґСѓС‚ СЃС‡РёС‚С‹РІР°С‚СЊСЃСЏ РґР°РЅРЅС‹Рµ
         size = elems_num;
         delete[] data_array;
         data_array = new T[size];
 
-        // В каждом потоке считываем свой кусок файла
+        // Р’ РєР°Р¶РґРѕРј РїРѕС‚РѕРєРµ СЃС‡РёС‚С‹РІР°РµРј СЃРІРѕР№ РєСѓСЃРѕРє С„Р°Р№Р»Р°
         int num_threads = NUM_THREADS;
         int frame_size = (elems_num % num_threads == 0) ?
             elems_num / num_threads :
@@ -167,7 +167,7 @@ public:
         if (size == 0)
             throw runtime_error("Array should be not empty");
 
-        // Создаём задачу для каждого потока
+        // РЎРѕР·РґР°С‘Рј Р·Р°РґР°С‡Сѓ РґР»СЏ РєР°Р¶РґРѕРіРѕ РїРѕС‚РѕРєР°
         int num_threads = NUM_THREADS;
         int frame_size = (size % num_threads == 0) ?
             size / num_threads :
@@ -179,7 +179,7 @@ public:
             ends[i] = min(frame_size * (i + 1), size);
         }
 
-        // В каждом потоке считываем свой кусок файла
+        // Р’ РєР°Р¶РґРѕРј РїРѕС‚РѕРєРµ СЃС‡РёС‚С‹РІР°РµРј СЃРІРѕР№ РєСѓСЃРѕРє С„Р°Р№Р»Р°
         MyVector<int> argmaxes(num_threads);
 #pragma omp parallel
         {
@@ -195,7 +195,7 @@ public:
             argmaxes[thread_id] = local_record;
         }
 
-        //По всем потокам выбираем argmax
+        //РџРѕ РІСЃРµРј РїРѕС‚РѕРєР°Рј РІС‹Р±РёСЂР°РµРј argmax
         int total_record = argmaxes[0];
         double total_max = data_array[total_record];
         for (int i = 1; i < num_threads; i++) {
@@ -269,11 +269,11 @@ namespace GridFunctions {
 
     void make_signal_noisy(MyVector<Complex>& signal, double noise_level) {
         int data_size = signal.get_size();
-        double distrib_border = noise_level / sqrt(2); // Чтобы у комплексного шума была амплитуда по модулю
-        random_device rd; // Источник случайных чисел
-        mt19937 gen(rd()); // Инициализация генератора Мерсенна
+        double distrib_border = noise_level / sqrt(2); // Р§С‚РѕР±С‹ Сѓ РєРѕРјРїР»РµРєСЃРЅРѕРіРѕ С€СѓРјР° Р±С‹Р»Р° Р°РјРїР»РёС‚СѓРґР° РїРѕ РјРѕРґСѓР»СЋ
+        random_device rd; // РСЃС‚РѕС‡РЅРёРє СЃР»СѓС‡Р°Р№РЅС‹С… С‡РёСЃРµР»
+        mt19937 gen(rd()); // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РіРµРЅРµСЂР°С‚РѕСЂР° РњРµСЂСЃРµРЅРЅР°
 
-        //Создание объекта распределения и генерация случайных чисел
+        //РЎРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р° СЂР°СЃРїСЂРµРґРµР»РµРЅРёСЏ Рё РіРµРЅРµСЂР°С†РёСЏ СЃР»СѓС‡Р°Р№РЅС‹С… С‡РёСЃРµР»
         uniform_real_distribution<double> distribution{ };
 #pragma omp parallel for schedule(static) private(distribution, gen)
         for (int i = 0; i < data_size; i++) {
@@ -290,7 +290,6 @@ namespace GridFunctions {
 
         for (int i = 0; i < left_idx; i++)
             signal[i] = T{ };
-
         for (int i = right_idx; i < signal.get_size(); i++)
             signal[i] = T{ };
     }
@@ -302,11 +301,11 @@ namespace FourierTransform {
     MyVector<Complex> dft(MyVector<Complex>& func_vector) {
         int points_num = func_vector.get_size();
 
-        // Умножение вектора на матрицу
+        // РЈРјРЅРѕР¶РµРЅРёРµ РІРµРєС‚РѕСЂР° РЅР° РјР°С‚СЂРёС†Сѓ
         MyVector<Complex> transform_result = MyVector<Complex>::zeros(points_num);
 #pragma omp parallel for schedule(dynamic) collapse(2)
         for (int n = 0; n < points_num; n++) {
-            Complex val_n = func_vector[n];  // минимизируем обращения к памяти
+            Complex val_n = func_vector[n];  // РјРёРЅРёРјРёР·РёСЂСѓРµРј РѕР±СЂР°С‰РµРЅРёСЏ Рє РїР°РјСЏС‚Рё
             for (int k = 0; k < points_num; k++) {
                 double current_frequency = (double)k * n / points_num;
                 transform_result[k] += exp(-2.0i * M_PI * current_frequency) * val_n;
@@ -316,9 +315,40 @@ namespace FourierTransform {
         return transform_result;
     }
 
+    MyVector<Complex> idft(MyVector<Complex>& func_vector) {
+        int points_num = func_vector.get_size();
+
+        // РЈРјРЅРѕР¶РµРЅРёРµ РІРµРєС‚РѕСЂР° РЅР° РјР°С‚СЂРёС†Сѓ
+        MyVector<Complex> transform_result = MyVector<Complex>::zeros(points_num);
+#pragma omp parallel for schedule(dynamic) collapse(2)
+        for (int n = 0; n < points_num; n++) {
+            Complex val_n = func_vector[n] / (double)points_num;  // РјРёРЅРёРјРёР·РёСЂСѓРµРј РѕР±СЂР°С‰РµРЅРёСЏ Рє РїР°РјСЏС‚Рё
+            for (int k = 0; k < points_num; k++) {
+                double current_frequency = (double)k * n / points_num;
+                transform_result[k] += exp(2.0i * M_PI * current_frequency) * val_n;
+            }
+        }
+
+        return transform_result;
+    }
+
+    MyVector<Complex> dft_shift(MyVector<Complex>& func_vector) {
+        int points_num = func_vector.get_size();
+        
+        MyVector<Complex> shifted_vector(points_num);
+#pragma parallel for schedule(static)
+        for (int i = 0; i < points_num / 2; i++){
+            shifted_vector[i] = func_vector[points_num / 2 + i + 1];
+            shifted_vector[points_num / 2 + i + 1] = func_vector[i];
+        }
+        shifted_vector[points_num / 2] = func_vector[0];
+
+        return shifted_vector;
+    }
+
     MyVector<double> dft_freq(MyVector<double>& time_vector) {
         int points_num = time_vector.get_size();
-        // считаем, что массив времени отсортирован
+        // СЃС‡РёС‚Р°РµРј, С‡С‚Рѕ РјР°СЃСЃРёРІ РІСЂРµРјРµРЅРё РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅ
         double time_area = time_vector[points_num - 1] - time_vector[points_num];
         double nyq_freq = 0.5 * points_num / time_area;
 

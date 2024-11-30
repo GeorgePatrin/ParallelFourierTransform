@@ -8,4 +8,5 @@
 ## Визуализация результатов работы программы:
 (для построения графиков необходимо загрузить бинарные файлы в ноутбук и запустить его
 https://colab.research.google.com/drive/1-UlH4bmY1PnjkDwtWJfJXWtwqR4FPy5y?usp=sharing)
+
 ![image](https://github.com/user-attachments/assets/4f3e866b-9dd0-4d8b-b5cf-f951c34a2a51)
